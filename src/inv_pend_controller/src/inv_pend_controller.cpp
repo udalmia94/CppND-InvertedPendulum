@@ -9,3 +9,12 @@ InvPendulumController::InvPendulumController() : Node("inv_pendulum_controller")
   pid_i_ = GetNodeParam<double>("pid_i");
   pid_d_ = GetNodeParam<double>("pid_d");
 }
+
+
+int main(int argc, char ** argv)
+{
+  rclcpp::init(argc, argv);
+  rclcpp::spin(std::make_shared<InvPendulumController>());
+  rclcpp::shutdown();
+  return 0;
+}
