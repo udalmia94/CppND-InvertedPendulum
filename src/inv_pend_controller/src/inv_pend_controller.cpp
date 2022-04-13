@@ -10,6 +10,19 @@ InvPendulumController::InvPendulumController() : Node("inv_pendulum_controller")
   pid_d_ = GetNodeParam<double>("pid_d");
 }
 
+void InvPendulumController::PendulumPositionUpdateClbk(sensor_msgs::msg::JointState::SharedPtr msg) {
+  auto pub_msg = sensor_msgs::msg::JointState();
+
+  double pendulum_pos = msg->position[0];
+  double pendulum_vel = msg->velocity[0];
+  integrator_ = integrator_ + pendulum_pos;
+
+  double wheel_vel_cmd = pid_p_ * pendulum_pos + pid_d_ * pendulum_vel + pid_i_ * integrator_;
+
+  pub_msg.velocity = {wheel_vel_cmd, wheel_vel_cmd, wheel_vel_cmd, wheel_vel_cmd};
+
+  wheel_velocity_cmd_publisher_->publish(pub_msg);
+}
 
 int main(int argc, char ** argv)
 {
