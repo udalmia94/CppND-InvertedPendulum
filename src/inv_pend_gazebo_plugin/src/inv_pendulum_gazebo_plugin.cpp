@@ -8,7 +8,18 @@ void InvPendulumPlugin::Load(physics::ModelPtr parent, sdf::ElementPtr sdf) {
 
   model_ = parent;
 
-  publisher_ = ros_node_->create_publisher<sensor_msgs::msg::JointState>("pendulum_angle", 10);
+  pend_joint_ = model_->GetJoint("pendulum_hinge");
+  wheel_joint_right_1_ = model_->GetJoint("right_wheel_hinge");
+  wheel_joint_right_2_ = model_->GetJoint("right_wheel_hinge_2");
+  wheel_joint_left_1_ = model_->GetJoint("left_wheel_hinge");
+  wheel_joint_left_2_ = model_->GetJoint("left_wheel_hinge_2");
+
+  wheel_joints_ = {wheel_joint_right_1_ ,wheel_joint_right_2_ ,wheel_joint_left_1_ ,wheel_joint_left_2_};
+
+  pend_angle_publisher_ = ros_node_->create_publisher<sensor_msgs::msg::JointState>("pendulum_angle", 10);
+
+  wheel_velocity_cmd_subscribtion_ = ros_node_->create_subscription<sensor_msgs::msg::JointState>("wheel_velocity_cmd", 10, 
+      std::bind(&InvPendulumPlugin::WheelVelocityCmdClbk, this, std::placeholders::_1));
 
   this->updateConnection = event::Events::ConnectWorldUpdateBegin(
       std::bind(&InvPendulumPlugin::OnUpdate, this));
