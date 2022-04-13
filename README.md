@@ -68,3 +68,7 @@ Member variables for this class are the joints on the cart, and other member var
 - Templates generalize functions in the project.
   - The `GetNodeParam` function in the `InvPendulumController` class uses templates.
 - The project uses smart pointers instead of raw pointers.
+
+## Reference
+
+Since this project focussed on C++, the Gazebo model for this project was taken from: <https://github.com/rbv188/Inverted-Pendulum-Simulation/blob/master/worlds/inverted_pendulum.world>.
