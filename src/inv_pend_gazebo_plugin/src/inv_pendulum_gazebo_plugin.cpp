@@ -28,9 +28,19 @@ void InvPendulumPlugin::Load(physics::ModelPtr parent, sdf::ElementPtr sdf) {
 void InvPendulumPlugin::OnUpdate() {
   auto message = sensor_msgs::msg::JointState();
 
-  auto pend_joint = model_->GetJoint("pendulum_hinge");
+  message.position = {pend_joint_->Position(0)};
+  message.velocity = {pend_joint_->GetVelocity(0)};
 
-  message.position = {pend_joint->Position(0)};
+  pend_angle_publisher_->publish(message);
+}
+
+void InvPendulumPlugin::WheelVelocityCmdClbk(const sensor_msgs::msg::JointState::SharedPtr msg) {
+  std::vector<double> velocities = msg->velocity;
+
+  for (int i = 0; i < 4; i++) {
+    wheel_joints_[i]->SetVelocity(0, velocities[i]);
+  }
+}
 
   publisher_->publish(message);
 }
