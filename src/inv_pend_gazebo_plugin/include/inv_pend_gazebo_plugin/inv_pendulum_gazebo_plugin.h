@@ -17,8 +17,8 @@ public:
 private: 
   void OnUpdate();
   void WheelVelocityCmdClbk(const sensor_msgs::msg::JointState::SharedPtr msg);
+  void AddDisturbance();
 
-  gazebo_ros::Node::SharedPtr ros_node_;
   physics::ModelPtr model_;
   event::ConnectionPtr updateConnection;
 
@@ -35,6 +35,7 @@ private:
 
   std::vector<physics::JointPtr> wheel_joints_;
 
+  const double kDisturanceFreqHz = 0.1;
 };
 
 }

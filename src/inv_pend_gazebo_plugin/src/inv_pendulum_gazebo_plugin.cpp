@@ -21,6 +21,8 @@ void InvPendulumPlugin::Load(physics::ModelPtr parent, sdf::ElementPtr sdf) {
   wheel_velocity_cmd_subscribtion_ = ros_node_->create_subscription<sensor_msgs::msg::JointState>("wheel_velocity_cmd", 10, 
       std::bind(&InvPendulumPlugin::WheelVelocityCmdClbk, this, std::placeholders::_1));
 
+  add_disturbance_timer_ = ros_node_->create_wall_timer(std::chrono::duration<double>(1.0 / kDisturanceFreqHz), std::bind(&InvPendulumPlugin::AddDisturbance, this));
+
   this->updateConnection = event::Events::ConnectWorldUpdateBegin(
       std::bind(&InvPendulumPlugin::OnUpdate, this));
 }
@@ -42,7 +44,8 @@ void InvPendulumPlugin::WheelVelocityCmdClbk(const sensor_msgs::msg::JointState:
   }
 }
 
-  publisher_->publish(message);
+void InvPendulumPlugin::AddDisturbance() {
+  pend_joint_->SetVelocity(0, 0.02);
 }
 
 // Register this plugin with the simulator
