@@ -1,0 +1,5 @@
+inv_pendulum_controller:
+  ros__parameters:
+    pid_p: 10000.0
+    pid_i: 0.0
+    pid_d: 0.0
